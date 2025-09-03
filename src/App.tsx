@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect } from 'react';
+import { observer } from 'mobx-react-lite';
+import { useStores } from './stores';
+import './styles/base.scss';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = observer(function App() {
+    const { auth, company, contact } = useStores();
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    useEffect(() => {
+        const run = async () => {
+            if (!auth.isAuthed) await auth.login();
+            await Promise.all([company.fetch(), contact.fetch()]);
+        };
+        run();
+    }, []);
 
-export default App
+    return (
+        <div className="container">
+            <h1>Test Assignment</h1>
+
+            {auth.loading && <p>Auth…</p>}
+            {auth.error && <p style={{color:'#ff8080'}}>Auth error: {auth.error}</p>}
+
+            {company.loading && <p>Loading company…</p>}
+            {contact.loading && <p>Loading contact…</p>}
+
+            {company.data && (
+                <div className="card" style={{ marginTop: 12 }}>
+                    <h3>Company</h3>
+                    <pre style={{whiteSpace:'pre-wrap'}}>{JSON.stringify(company.data, null, 2)}</pre>
+                </div>
+            )}
+
+            {contact.data && (
+                <div className="card" style={{ marginTop: 12 }}>
+                    <h3>Contact</h3>
+                    <pre style={{whiteSpace:'pre-wrap'}}>{JSON.stringify(contact.data, null, 2)}</pre>
+                </div>
+            )}
+        </div>
+    );
+});
+
+export default App;

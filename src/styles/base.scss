@@ -1,0 +1,38 @@
+$font-stack: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+$color-bg: #0f1216;
+$color-text: #e6eaef;
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: $color-bg;
+  color: $color-text;
+  font-family: $font-stack;
+}
+
+.container {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.button {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: #171b21;
+  color: $color-text;
+  cursor: pointer;
+
+  &--primary {
+    background: #7aa2ff;
+    color: #0a0e14;
+  }
+
+  &--danger {
+    background: #ff6b6b;
+    color: #0a0e14;
+  }
+}
